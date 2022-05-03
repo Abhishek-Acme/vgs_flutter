@@ -19,39 +19,25 @@ class VGSFlutter {
 class VGSCollectData {
   VGSCollectData({
     required this.vaultId,
+    required this.path,
     required this.sandbox,
     required this.headers,
-    required this.extraData,
+    required this.data,
   });
 
   final String vaultId;
+  final String path;
   final bool sandbox;
   final Map<String, String> headers;
-  final VGSExtraData extraData;
+  final Map<String, dynamic> data;
 
   Map<String, Object> toMap() {
     return {
       'vaultId': vaultId,
       'sandbox': sandbox,
       'headers': headers,
-      'data': extraData.toMap(),
-    };
-  }
-}
-
-class VGSExtraData {
-  VGSExtraData({
-    required this.query,
-    required this.variables,
-  });
-
-  final String query;
-  final Map<String, Object> variables;
-
-  Map<String, Object> toMap() {
-    return {
-      'query': query,
-      'variables': variables,
+      'path': path,
+      'data': data,
     };
   }
 }

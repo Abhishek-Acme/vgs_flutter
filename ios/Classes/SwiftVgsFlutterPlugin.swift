@@ -16,21 +16,22 @@ public class SwiftVgsFlutterPlugin: NSObject, FlutterPlugin {
             guard let headers = args["headers"] as? Dictionary<String, String> else { return }
             guard let vaultId = args["vaultId"] as? String else { return }
             guard let sandbox = args["sandbox"] as? Bool else { return }
+            guard let path = args["path"] as? String else { return }
             let data = args["data"] as? Dictionary<String, Any>
             
-            sendData(vaultId, sandbox, headers, data, result)
+            sendData(vaultId, sandbox, headers, data,path, result)
             break
         default:
             result(FlutterMethodNotImplemented)
         }
     }
     
-    func sendData(_ id: String ,_ sandbox: Bool,_ headers: Dictionary<String, String>,_ data: Dictionary<String, Any>?, _ result: @escaping FlutterResult) {
+    func sendData(_ id: String ,_ sandbox: Bool,_ headers: Dictionary<String, String>,_ data: Dictionary<String, Any>?,_ path:String, _ result: @escaping FlutterResult) {
         let collect = VGSCollect(id: id, environment: sandbox ?  .sandbox: .live)
         
         collect.customHeaders = headers
 
-        collect.sendData(path: "/post", extraData: data) { (response) in
+        collect.sendData(path: path, extraData: data) { (response) in
             switch response {
             case .success(_, let data, _):
                 result(data.utf8String)

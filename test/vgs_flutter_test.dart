@@ -7,23 +7,25 @@ void main() {
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final extraData = VGSExtraData(
-    query: 'query',
-    variables: {'userId': 'user-id'},
-  );
+  final extraData = {
+    'query': 'query',
+    'variables': {'userId': 'user-id'},
+  };
 
   final correctData = VGSCollectData(
     vaultId: 'correct-id',
+    path: 'path',
     sandbox: true,
     headers: {'Authrorization': 'Bearer Token'},
-    extraData: extraData,
+    data: extraData,
   );
 
   final incorrectData = VGSCollectData(
     vaultId: 'incorrect-id',
+    path: 'path',
     sandbox: true,
     headers: {'Authrorization': 'Bearer Token'},
-    extraData: extraData,
+    data: extraData,
   );
 
   Map<String, Object>? _platformArgs;
@@ -53,6 +55,7 @@ void main() {
         'vaultId': 'correct-id',
         'sandbox': true,
         'headers': {'Authrorization': 'Bearer Token'},
+        'path': 'path',
         'data': {
           'query': 'query',
           'variables': {'userId': 'user-id'},

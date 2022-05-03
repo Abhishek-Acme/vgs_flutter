@@ -36,9 +36,10 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val headers = call.argument<Map<String, String>>("headers") ?: mapOf()
                 val vaultId = call.argument<String>("vaultId") ?: ""
                 val sandbox = call.argument<Boolean>("sandbox") ?: true
+                val path = call.argument<Boolean>("path") ?: true
                 val data = call.argument<Map<String, Any>>("data")
 
-                sendData(vaultId, sandbox, headers, data)
+                sendData(vaultId, sandbox, headers, data,path)
             }
             else -> result.notImplemented()
         }
@@ -49,7 +50,7 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         result = null
     }
 
-    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?) {
+    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?,path:String) {
         if (activity == null) {
             result?.error("NO_CONTEXT", "", "")
             return
@@ -62,7 +63,7 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
         collect.clearResponseListeners()
 
-        collect.asyncSubmit("/post", HTTPMethod.POST)
+        collect.asyncSubmit(path, HTTPMethod.POST)
 
         collect.addOnResponseListeners(
                 object : VgsCollectResponseListener {

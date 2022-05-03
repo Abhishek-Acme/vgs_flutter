@@ -55,21 +55,20 @@ class _MyAppState extends State<MyApp> {
                 final response = await VGSFlutter.send(
                   data: VGSCollectData(
                     vaultId: <vault-id>,
+                    path: '/cards',
                     sandbox: true,
                     headers: {
                       'Authorization':
                           'Bearer eyJraWQiOiJTWWYweldVR1dGTnBxSHE4YjBZZDMxS2tRdjJYcmVGOG8yV0V5T1wvb1hHMD0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2NGQ5N2E1My00MzNmLTRlMDItOTI5MC1lMTU1MGM1ZTQ5MGYiLCJhdWQiOiI3ZTBpbWVwcjU0MXRpdGdtczJuMHZlMmU1cCIsImV2ZW50X2lkIjoiMmQzNTEyMTgtODFiZS00ODFlLWI1NjItMDc1MmJhZjFiNGQyIiwidG9rZW5fdXNlIjoiaWQiLCJjdXN0b206cGVyY2hfaWQiOiIxMDg4ZWQ4Yy04ZTcyLTRkYTAtODFkZi1kMDNhZmE1YmNlMzUiLCJhdXRoX3RpbWUiOjE2NDYzMTUyMDcsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy13ZXN0LTIuYW1hem9uYXdzLmNvbVwvdXMtd2VzdC0yXzBDd2Y5c1N0SCIsImNvZ25pdG86dXNlcm5hbWUiOiI2NGQ5N2E1My00MzNmLTRlMDItOTI5MC1lMTU1MGM1ZTQ5MGYiLCJjdXN0b206cGVyY2hfcm9sZSI6IlVTRVIiLCJleHAiOjE2NDYzMTg4MDcsImlhdCI6MTY0NjMxNTIwNywiZW1haWwiOiJmcm9udGVuZCs1MEBnZXRwZXJjaC5hcHAifQ.C7H9LzbM0EKqPrWCIEWja4RvXa1DrD19wGHo1ZrVx113Pbl21oLEtExnEgVAMy6NAhOTwBUerCJbzO6WH08bqb4LwXd4-Ug0Mrbvq775W2oSuQdl3nf82IhhTXajY4i9yjdJN0ugx0kqMy4aWpnvzJtQQQ-rGc3IJe6eHDvyVYHFsBbe1qosknvL2zYpRvzwg66PJnhu9vlxjtYwJbpKKYA2kqsl4-67WOYDYVs7KNV9bRQ9IUG-Fqhr4YoyNDmJnAn3ExmbVh0hjQ9MBwiA0RPd9_LtyunfLWPUO0Vx',
                     },
-                    extraData: VGSExtraData(
-                      query: _query,
-                      variables: {
-                        'userID': '1088ed8c-8e72-4da0-81df-d03afa5bce35',
-                        'ssn': '4111111111111111',
-                      },
-                    ),
+                    data: {
+                      'attributes': {
+                        'cvv2': '1234',
+                        'expiration-date': '02/2012',
+                      }
+                    },
                   ),
                 );
-
                 Navigator.pop(context);
                 showDialog(
                   context: context,
@@ -103,15 +102,5 @@ class _MyAppState extends State<MyApp> {
         }),
       ),
     );
-  }
-
-  String get _query {
-    return r'''
-    mutation updateUserPersonalInformation($userID: UUID!, $ssn: String) {
-      updateUserPersonalInformation(userID: $userID, ssn: $ssn) {
-        id
-      }
-    }
-    ''';
   }
 }
