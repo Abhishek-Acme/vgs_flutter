@@ -36,7 +36,7 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val headers = call.argument<Map<String, String>>("headers") ?: mapOf()
                 val vaultId = call.argument<String>("vaultId") ?: ""
                 val sandbox = call.argument<Boolean>("sandbox") ?: true
-                val path = call.argument<Boolean>("path") ?: ""
+                val path = call.argument<String>("path") ?: ""
                 val data = call.argument<Map<String, Any>>("data")
 
                 sendData(vaultId, sandbox, headers, data,path)
@@ -50,7 +50,7 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         result = null
     }
 
-    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?,path:String) {
+    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?,path: String) {
         if (activity == null) {
             result?.error("NO_CONTEXT", "", "")
             return
