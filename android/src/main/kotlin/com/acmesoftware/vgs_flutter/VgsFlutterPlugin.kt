@@ -50,7 +50,7 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         result = null
     }
 
-    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?,path: String) {
+    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?,path:String) {
         if (activity == null) {
             result?.error("NO_CONTEXT", "", "")
             return

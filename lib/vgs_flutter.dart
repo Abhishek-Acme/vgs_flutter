@@ -11,7 +11,7 @@ class VGSFlutter {
       return await _channel.invokeMethod<String>('sendData', data.toMap());
     } on PlatformException catch (e) {
       log('VGS Exception: $e');
-      return null;
+      rethrow;
     }
   }
 }
