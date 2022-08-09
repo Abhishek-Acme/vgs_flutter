@@ -26,14 +26,14 @@ public class SwiftVgsFlutterPlugin: NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
         }
     }
-    
+
     func sendData(_ id: String ,_ sandbox: Bool,_ headers: Dictionary<String, String>,_ data: Dictionary<String, Any>?,_ path:String,_ request:String, _ result: @escaping FlutterResult) {
         let collect = VGSCollect(id: id, environment: sandbox ?  .sandbox: .live)
-        let requestMethod = getRequestMethod(request)
+        let requestType = getRequestType(request: request)
 
         collect.customHeaders = headers
-        
-        collect.sendData(path: path, extraData: data, method: requestMethod) { (response) in
+
+        collect.sendData(path: path, method: requestType, extraData: data) { (response) in
             switch response {
             case .success(_, let data, _):
                 result(data.utf8String)
@@ -43,26 +43,29 @@ public class SwiftVgsFlutterPlugin: NSObject, FlutterPlugin {
                 return
             }
         }
-        
+
     }
-    
-    func getRequestMethod(_ request: String) -> HTTPMethod{
-        switch request {
+
+    func getRequestType(request:String)->HTTPMethod{
+        switch(request){
         case "POST":
-            return .post
+            return HTTPMethod.post
         case "PUT":
-            return .put
-        case "DELETE":
-            return .delete
+            return HTTPMethod.put
         case "GET":
-            return .get
+            return HTTPMethod.get
+        case "DELETE":
+            return HTTPMethod.delete
         case "PATCH":
-            return .patch
+            return HTTPMethod.patch
+        default:
+            return HTTPMethod.post
         }
     }
-    
-    extension Optional where Wrapped == Data {
-        var utf8String: String? {
-            return self == nil ? nil : String(decoding: self!, as: UTF8.self)
-        }
+}
+
+extension Optional where Wrapped == Data {
+    var utf8String: String? {
+        return self == nil ? nil : String(decoding: self!, as: UTF8.self)
     }
+}
