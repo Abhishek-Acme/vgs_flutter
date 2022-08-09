@@ -37,9 +37,10 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val vaultId = call.argument<String>("vaultId") ?: ""
                 val sandbox = call.argument<Boolean>("sandbox") ?: true
                 val path = call.argument<String>("path") ?: ""
+                val request = call.argument<String>("request") ?: ""
                 val data = call.argument<Map<String, Any>>("data")
 
-                sendData(vaultId, sandbox, headers, data,path)
+                sendData(vaultId, sandbox, headers, data, path, request)
             }
             else -> result.notImplemented()
         }
@@ -50,47 +51,68 @@ class VgsFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         result = null
     }
 
-    private fun sendData(id: String, sandbox: Boolean, headers: Map<String, String>, data: Map<String, Any>?,path:String) {
+    private fun sendData(
+        id: String,
+        sandbox: Boolean,
+        headers: Map<String, String>,
+        data: Map<String, Any>?,
+        path: String,
+        request: String
+    ) {
         if (activity == null) {
             result?.error("NO_CONTEXT", "", "")
             return
         }
 
-        val collect = VGSCollect(activity!!, id, if (sandbox) Environment.SANDBOX else Environment.LIVE)
+        val collect =
+            VGSCollect(activity!!, id, if (sandbox) Environment.SANDBOX else Environment.LIVE)
 
         collect.setCustomHeaders(headers)
         collect.setCustomData(data)
 
         collect.clearResponseListeners()
 
-        collect.asyncSubmit(path, HTTPMethod.POST)
+        collect.asyncSubmit(path, getRequest(request))
 
         collect.addOnResponseListeners(
-                object : VgsCollectResponseListener {
-                    override fun onResponse(response: VGSResponse?) {
-                        when (response) {
-                            is VGSResponse.SuccessResponse -> result?.success(response.body)
-                            is VGSResponse.ErrorResponse -> {
-                                result?.error(response.errorCode.toString(), response.localizeMessage, response.body)
-                            }
-                            else -> result?.error("NO_RESPONSE", null, null)
+            object : VgsCollectResponseListener {
+                override fun onResponse(response: VGSResponse?) {
+                    when (response) {
+                        is VGSResponse.SuccessResponse -> result?.success(response.body)
+                        is VGSResponse.ErrorResponse -> {
+                            result?.error(
+                                response.errorCode.toString(),
+                                response.localizeMessage,
+                                response.body
+                            )
                         }
+                        else -> result?.error("NO_RESPONSE", null, null)
                     }
                 }
+            }
         )
+    }
+
+    private fun getRequest(request: String): HTTPMethod {
+        return when (request) {
+            "POST" -> HTTPMethod.POST
+            "PUT" -> HTTPMethod.PUT
+            "GET" -> HTTPMethod.GET
+            "DELETE" -> HTTPMethod.DELETE
+            "PATCH" -> HTTPMethod.PATCH
+            else -> HTTPMethod.POST
+        }
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
     }
 
-    override fun onDetachedFromActivityForConfigChanges() { }
+    override fun onDetachedFromActivityForConfigChanges() {}
 
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) { }
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
 
     override fun onDetachedFromActivity() {
         activity = null
     }
-
-
 }

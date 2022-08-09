@@ -17,21 +17,23 @@ public class SwiftVgsFlutterPlugin: NSObject, FlutterPlugin {
             guard let vaultId = args["vaultId"] as? String else { return }
             guard let sandbox = args["sandbox"] as? Bool else { return }
             guard let path = args["path"] as? String else { return }
+            guard let request = args["request"] as? String else { return }
             let data = args["data"] as? Dictionary<String, Any>
-            
-            sendData(vaultId, sandbox, headers, data,path, result)
+
+            sendData(vaultId, sandbox, headers, data, path, request, result)
             break
         default:
             result(FlutterMethodNotImplemented)
         }
     }
     
-    func sendData(_ id: String ,_ sandbox: Bool,_ headers: Dictionary<String, String>,_ data: Dictionary<String, Any>?,_ path:String, _ result: @escaping FlutterResult) {
+    func sendData(_ id: String ,_ sandbox: Bool,_ headers: Dictionary<String, String>,_ data: Dictionary<String, Any>?,_ path:String,_ request:String, _ result: @escaping FlutterResult) {
         let collect = VGSCollect(id: id, environment: sandbox ?  .sandbox: .live)
-        
-        collect.customHeaders = headers
+        let requestMethod = getRequestMethod(request)
 
-        collect.sendData(path: path, extraData: data) { (response) in
+        collect.customHeaders = headers
+        
+        collect.sendData(path: path, extraData: data, method: requestMethod) { (response) in
             switch response {
             case .success(_, let data, _):
                 result(data.utf8String)
@@ -43,10 +45,24 @@ public class SwiftVgsFlutterPlugin: NSObject, FlutterPlugin {
         }
         
     }
-}
-
-extension Optional where Wrapped == Data {
-    var utf8String: String? {
-        return self == nil ? nil : String(decoding: self!, as: UTF8.self)
+    
+    func getRequestMethod(_ request: String) -> HTTPMethod{
+        switch request {
+        case "POST":
+            return .post
+        case "PUT":
+            return .put
+        case "DELETE":
+            return .delete
+        case "GET":
+            return .get
+        case "PATCH":
+            return .patch
+        }
     }
-}
+    
+    extension Optional where Wrapped == Data {
+        var utf8String: String? {
+            return self == nil ? nil : String(decoding: self!, as: UTF8.self)
+        }
+    }
