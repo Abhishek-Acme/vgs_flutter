@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
 
                 final response = await VGSFlutter.send(
                   data: VGSCollectData(
-                    request: VGSRequest.post,
+                    request: VGSHttpRequest.post,
                     vaultId: <vault-id>,
                     path: '/cards',
                     sandbox: true,

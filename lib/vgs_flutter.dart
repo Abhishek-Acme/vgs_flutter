@@ -23,7 +23,7 @@ class VGSCollectData {
     required this.sandbox,
     required this.headers,
     required this.data,
-    this.request = VGSRequest.post,
+    this.request = VGSHttpRequest.post,
   });
 
   final String vaultId;
@@ -31,7 +31,7 @@ class VGSCollectData {
   final bool sandbox;
   final Map<String, String> headers;
   final Map<String, dynamic> data;
-  final VGSRequest request;
+  final VGSHttpRequest request;
 
   Map<String, Object> toMap() {
     return {
@@ -44,20 +44,20 @@ class VGSCollectData {
     };
   }
 
-  String stringifyRequest(VGSRequest request) {
+  String stringifyRequest(VGSHttpRequest request) {
     switch (request) {
-      case VGSRequest.post:
+      case VGSHttpRequest.post:
         return 'POST';
-      case VGSRequest.put:
+      case VGSHttpRequest.put:
         return 'PUT';
-      case VGSRequest.get:
+      case VGSHttpRequest.get:
         return 'GET';
-      case VGSRequest.delete:
+      case VGSHttpRequest.delete:
         return 'DELETE';
-      case VGSRequest.patch:
+      case VGSHttpRequest.patch:
         return 'PATCH';
     }
   }
 }
 
-enum VGSRequest { post, put, get, delete, patch }
+enum VGSHttpRequest { post, put, get, delete, patch }
